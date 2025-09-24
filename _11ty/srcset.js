@@ -22,6 +22,7 @@
 const { promisify } = require("util");
 const exists = promisify(require("fs").exists);
 const sharp = require("sharp");
+const OUTPUT_DIR = require("./output-dir");
 
 /**
  * Generates sensible sizes for each image for use in a srcset.
@@ -53,17 +54,17 @@ module.exports = async function srcset(filename, format) {
 
 async function resize(filename, width, format) {
   const out = sizedName(filename, width, format);
-  if (await exists("_site" + out)) {
+  if (await exists(OUTPUT_DIR + out)) {
     return out;
   }
-  await sharp("_site" + filename)
+  await sharp(OUTPUT_DIR + filename)
     .rotate() // Manifest rotation from metadata
     .resize(width)
     [format]({
       quality: quality[format] || quality.default,
       reductionEffort: 6,
     })
-    .toFile("_site" + out);
+    .toFile(OUTPUT_DIR + out);
 
   return out;
 }

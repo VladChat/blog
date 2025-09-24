@@ -26,6 +26,7 @@ const blurryPlaceholder = require("./blurry-placeholder");
 const srcset = require("./srcset");
 const path = require("path");
 const { gif2mp4 } = require("./video-gif");
+const OUTPUT_DIR = require("./output-dir");
 
 /**
  * Sets `width` and `height` on each image, adds blurry placeholder
@@ -43,14 +44,17 @@ const processImage = async (img, outputPath) => {
     // resolve relative URL
     src =
       "/" +
-      path.relative("./_site/", path.resolve(path.dirname(outputPath), src));
+      path.relative(
+        `./${OUTPUT_DIR}/`,
+        path.resolve(path.dirname(outputPath), src)
+      );
     if (path.sep == "\\") {
       src = src.replace(/\\/g, "/");
     }
   }
   let dimensions;
   try {
-    dimensions = await sizeOf("_site/" + src);
+    dimensions = await sizeOf(`${OUTPUT_DIR}/${src}`);
   } catch (e) {
     console.warn(e.message, src);
     return;

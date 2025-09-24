@@ -31,6 +31,7 @@ const readFile = promisify(require("fs").readFile);
 const writeFile = promisify(require("fs").writeFile);
 const exists = promisify(require("fs").exists);
 
+const OUTPUT_DIR = require("./output-dir");
 const PIXEL_TARGET = 60;
 
 const ESCAPE_TABLE = {
@@ -92,7 +93,7 @@ function getBitmapDimensions_(imgWidth, imgHeight) {
 }
 
 module.exports = async function (src) {
-  const filename = "_site/" + src;
+  const filename = `${OUTPUT_DIR}/${src}`;
   const cachedName = filename + ".blurred";
   if (await exists(cachedName)) {
     return readFile(cachedName, {
