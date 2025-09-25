@@ -1,1 +1,1 @@
-module.exports = "dist";
+module.exports = "_site";

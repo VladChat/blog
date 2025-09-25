@@ -7,7 +7,7 @@ This repository implements a fully automated news publication built on Google’
 1. **Configuration first** – Update the JSON files in [`config/`](config/) to control feed sources, prompt wording, keyword rotation, and preferred OpenAI models.
 2. **Scheduled generation** – The workflow defined in [`.github/workflows/auto-blog.yml`](.github/workflows/auto-blog.yml) runs daily (cron `0 13 * * *`) or on demand. It installs dependencies, runs `npm run generate`, commits any new posts, builds the Eleventy site, and deploys it to GitHub Pages.
 3. **Content pipeline** – [`scripts/generate-posts.mjs`](scripts/generate-posts.mjs) fetches recent RSS items, assigns keywords round-robin, calls OpenAI with the configured prompt, and saves validated Markdown posts under `src/posts/YYYY/MM/slug/index.md` alongside YAML front matter that includes sources and metadata.
-4. **Static publishing** – `npm run build` produces an optimized site in the `dist/` directory using the Eleventy High Performance Blog stack. Lighthouse-friendly defaults remain intact.
+4. **Static publishing** – `npm run build` produces an optimized site in the `_site/` directory using the Eleventy High Performance Blog stack. Lighthouse-friendly defaults remain intact.
 
 ## Repository layout
 
@@ -74,7 +74,7 @@ Static pages such as [About](src/about/index.md) and [Sources Policy](src/source
 
 ## Deployment
 
-GitHub Pages is deployed through the `auto-blog` workflow. Successful runs upload the `dist/` directory using the official `actions/deploy-pages` action. Ensure GitHub Pages is configured to use **GitHub Actions** as the deployment source under **Settings → Pages**.
+GitHub Pages is deployed through the `deploy` workflow. Successful runs upload the `_site/` directory using the official `actions/deploy-pages` action. Ensure GitHub Pages is configured to use **GitHub Actions** as the deployment source under **Settings → Pages**.
 
 ## Credits
 
