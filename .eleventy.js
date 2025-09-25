@@ -149,6 +149,14 @@ module.exports = function (eleventyConfig) {
     );
   });
 
+  eleventyConfig.addFilter("date", (dateObj, format = "dd LLL yyyy") => {
+    if (!dateObj) {
+      return "";
+    }
+    const jsDate = dateObj instanceof Date ? dateObj : new Date(dateObj);
+    return DateTime.fromJSDate(jsDate, { zone: "utc" }).toFormat(format);
+  });
+
   // https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-date-string
   eleventyConfig.addFilter("htmlDateString", (dateObj) => {
     return DateTime.fromJSDate(dateObj, { zone: "utc" }).toFormat("yyyy-LL-dd");
@@ -171,6 +179,9 @@ module.exports = function (eleventyConfig) {
     return array.slice(0, n);
   });
 
+  eleventyConfig.addCollection("post", function (collectionApi) {
+    return collectionApi.getFilteredByGlob("src/posts/**/*.md");
+  });
   eleventyConfig.addCollection("posts", function (collectionApi) {
     return collectionApi.getFilteredByTag("posts");
   });

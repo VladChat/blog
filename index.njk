@@ -13,6 +13,11 @@ date: Last Modified
 
 <div id="posts">
   <h2>Posts</h2>
-  {% set postslist = collections.posts %}
-  {% include "postslist.njk" %}
+  <ul>
+    {% for post in collections.post %}
+      <li>
+        <a href="{{ post.url }}">{{ post.data.title }}</a> – {{ post.date | date("dd MMM yyyy") }}
+      </li>
+    {% endfor %}
+  </ul>
 </div>
