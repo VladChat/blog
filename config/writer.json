@@ -1,0 +1,19 @@
+{
+  "tone": "expert but approachable",
+  "priority": "breaking news first, keywords second",
+  "rules": {
+    "newsSelection": "Pick most demanded / trending RSS headlines. Relevance to keyword is secondary.",
+    "keywordIntegration": "Always combine the keyword naturally inside the article. Mention keyword 2–3 times, never spam.",
+    "headline": "Breaking news focus, keyword included subtly.",
+    "intro": "Brief summary of the news event (not keyword).",
+    "body": "Explain news, background, consequences. Connect keyword naturally in context.",
+    "conclusion": "Tie news impact back to keyword theme.",
+    "meta": "Generate 150–160 character meta description, include keyword once.",
+    "sources": "Always include 1–3 linked sources from RSS."
+  },
+  "extras": {
+    "faqs": true,
+    "lists": true,
+    "youtubeEmbed": false
+  }
+}

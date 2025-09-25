@@ -1,0 +1,9 @@
+{
+  "mode": "scheduled",
+  "frequency": "0 12 * * *",
+  "model": "gpt-4.1-mini",
+  "maxWords": 1200,
+  "newsFeeds": [
+    "https://news.google.com/rss?hl=en-US&gl=US&ceid=US:en"
+  ]
+}

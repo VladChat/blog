@@ -1,26 +1,26 @@
 {
-  "title": "Title of the website. Update me.",
-  "url": "https://update-me.com",
-  "domain": "update-me.com",
-  "description": "Description of the website. Update me.",
-  "genre": "Insert a schema.org genre",
-  "googleAnalyticsId": "GA ID. Update me. Note, that this is not compatible with the not-yet-commonly used version 4 of Google Analytics",
+  "title": "VladChat Blog",
+  "url": "https://vladchat.github.io/blog",
+  "domain": "vladchat.github.io",
+  "description": "Insights on AI, automation, and the future of software delivery.",
+  "genre": "Technology",
+  "googleAnalyticsId": "",
   "sendWebVitals": false,
   "feed": {
-    "subtitle": "Subtitle. Update me.",
+    "subtitle": "Latest updates from VladChat Blog",
     "filename": "feed.xml",
     "path": "/feed/feed.xml",
-    "id": "https://update-me.com"
+    "id": "https://vladchat.github.io/blog"
   },
   "jsonfeed": {
     "path": "/feed/feed.json",
-    "url": "https://update-me.com/feed/feed.json"
+    "url": "https://vladchat.github.io/blog/feed/feed.json"
   },
   "author": {
-    "name": "Author Name. Update me.",
-    "twitterHandle": "update_me"
+    "name": "Vlad Chat",
+    "twitterHandle": "vladchat"
   },
   "publisher": {
-    "name": "Publisher name. Update me."
+    "name": "VladChat Media"
   }
 }

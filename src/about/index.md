@@ -1,15 +1,20 @@
 ---
-layout: layouts/base.njk
-title: About
-templateClass: tmpl-post
+title: "About"
+layout: layouts/post.njk
+description: "Learn more about the VladChat blog and its mission."
 eleventyNavigation:
   key: About
-  order: 3
-permalink: /about/
+  order: 2
 ---
 
-AI-SEO Newsroom is a fully automated publication that blends reliable reporting with modern search optimisation. Every day, we gather trusted headlines from curated RSS feeds, pair them with a rotating list of high-value keywords, and ask OpenAI to produce original explainers tailored to technology leaders.
+## About this publication
 
-Humans stay in the loop by maintaining the configuration files in this repository. Editors choose feeds, prompts, and model fallbacks, while the GitHub Actions workflow handles article generation, Eleventy builds, and GitHub Pages deployment.
+VladChat Blog explores the intersection of technology, AI, and business strategy. The site began as an experiment with the Eleventy High Performance Blog starter and has grown into an automated newsroom where editors can blend handcrafted analysis with generated coverage on fast-moving stories.
 
-This site extends Google’s [Eleventy High Performance Blog](https://www.industrialempathy.com/posts/eleventy-high-performance-blog/) starter, preserving its speed-focused architecture while adding a responsible automation layer.
+## How the automation works
+
+We use a scheduled workflow that reviews curated RSS feeds, pairs the most in-demand headlines with a rotating set of strategic keywords, and collaborates with OpenAI's GPT models to produce long-form explainers. Each article is checked into this repository so the entire publishing history remains transparent.
+
+## Keeping humans in the loop
+
+Editors configure the automation with JSON files in the `config/` directory, review generated drafts locally, and can always edit or supplement posts before publishing. The goal is to amplify reporting capacity—not to remove thoughtful editorial oversight.

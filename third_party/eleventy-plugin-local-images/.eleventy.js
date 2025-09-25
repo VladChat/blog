@@ -5,6 +5,14 @@ const fetch = require("node-fetch");
 const sh = require("shorthash");
 const fileType = require("file-type");
 const metadata = require("../../_data/metadata.json");
+const pathPrefix = (() => {
+  try {
+    return new URL(metadata.url).pathname.replace(/\/$/, "");
+  } catch (error) {
+    return "";
+  }
+})();
+const sanitizedPrefix = pathPrefix.replace(/^\//, "");
 
 let config = { distPath: "_site", verbose: false, attribute: "src" };
 
@@ -75,7 +83,12 @@ const processImageAttr = async (img, attribute) => {
       const hash = sh.unique(imgPath);
 
       let hashedFilename = `${hash}${path.extname(filename)}`;
-      let outputFilePath = path.join(distPath, assetPath, hashedFilename);
+      const assetRoot = path.join(
+        distPath,
+        sanitizedPrefix,
+        assetPath.replace(/^\//, "")
+      );
+      let outputFilePath = path.join(assetRoot, hashedFilename);
       if (!path.extname(filename) || !fs.existsSync(outputFilePath)) {
         hashedFilename = null;
         // image is external so download it.
@@ -87,7 +100,7 @@ const processImageAttr = async (img, attribute) => {
             : `${hash}${path.extname(filename)}`;
 
           // create the file path from config
-          outputFilePath = path.join(distPath, assetPath, hashedFilename);
+          outputFilePath = path.join(assetRoot, hashedFilename);
 
           // save the file out, and log it to the console
           await fs.outputFile(outputFilePath, imgBuffer);
@@ -104,6 +117,8 @@ const processImageAttr = async (img, attribute) => {
         let href = urlJoin(assetPath, hashedFilename);
         if (attribute == "content") {
           href = `${metadata.url}${href}`;
+        } else if (pathPrefix) {
+          href = urlJoin(pathPrefix, href);
         }
         img.setAttribute(attribute, href);
       }

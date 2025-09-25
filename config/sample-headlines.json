@@ -1,0 +1,23 @@
+[
+  {
+    "title": "Global AI Regulations Accelerate as Nations Coordinate",
+    "link": "https://example.com/news/global-ai-regulations",
+    "summary": "International policymakers are fast-tracking AI guardrails amid rapid model releases and public concerns.",
+    "publishedAt": "2025-09-24T08:00:00Z",
+    "feedTitle": "Sample Tech Wire"
+  },
+  {
+    "title": "Cloud Spending Surges on Enterprise Modernization",
+    "link": "https://example.com/news/cloud-spending-surges",
+    "summary": "Enterprises are expanding multicloud footprints to support automation initiatives and data residency requirements.",
+    "publishedAt": "2025-09-24T07:30:00Z",
+    "feedTitle": "Sample Tech Wire"
+  },
+  {
+    "title": "Cybersecurity Talent Gap Widens as Threats Multiply",
+    "link": "https://example.com/news/cybersecurity-talent-gap",
+    "summary": "Managed security providers report record demand for rapid incident response and continuous monitoring.",
+    "publishedAt": "2025-09-24T06:45:00Z",
+    "feedTitle": "Sample Tech Wire"
+  }
+]

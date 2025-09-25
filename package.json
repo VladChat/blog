@@ -8,14 +8,15 @@
     "build": "npm run clean && npm run build-ci",
     "watch": "concurrently \"npm run serve\" \"npm run js-build-watch\" \"npm run test-watch\"",
     "serve": "npm run clean && eleventy --serve",
+    "start": "npm run serve",
     "js-build": "rollup -c rollup.config.js",
     "js-build-watch": "rollup -c rollup.config.js -w",
     "debug": "DEBUG=* eleventy && npm run test",
     "test": "mocha test/test*.js",
     "test-watch": "mocha test/test*.js --watch --watch-files=test/*",
     "clean": "rm -Rf ./_site/posts/*",
-    "generate": "node scripts/generate-posts.mjs",
-    "generate:dry": "node scripts/generate-posts.mjs --dry-run --verbose"
+    "generate": "node scripts/generate-posts.js",
+    "generate:dry": "node scripts/generate-posts.js --dry-run --verbose"
   },
   "pre-push": [
     "build"
@@ -58,11 +59,13 @@
     "expect.js": "^0.3.1",
     "ffmpeg-static": "^4.4.0",
     "hasha": "^5.2.0",
+    "gray-matter": "^4.0.3",
     "html-minifier": "^4.0.0",
     "image-size": "^0.8.3",
     "js-yaml": "^4.1.0",
     "lru-cache": "^5.1.1",
     "mocha": "^10.1.0",
+    "openai": "^4.47.1",
     "phin": "^3.5.0",
     "purge-from-html": "^1.0.3",
     "purgecss": "^4.0.3",

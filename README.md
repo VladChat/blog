@@ -1,81 +1,74 @@
-# AI-SEO News Blog
+# VladChat Blog
 
-This repository implements a fully automated news publication built on Google’s [Eleventy High Performance Blog](https://www.industrialempathy.com/posts/eleventy-high-performance-blog/). Every day a GitHub Action gathers trusted RSS headlines, pairs them with SEO keywords, asks OpenAI to draft original coverage, and publishes the resulting Markdown to GitHub Pages.
+This repository powers the VladChat automated newsroom. It extends Google’s [Eleventy High Performance Blog](https://www.industrialempathy.com/posts/eleventy-high-performance-blog/) with scheduled content generation, OpenAI-assisted writing, and a GitHub Pages deployment under [`/blog`](https://vladchat.github.io/blog/).
 
-## How it works
+## How the system works
 
-1. **Configuration first** – Update the JSON files in [`config/`](config/) to control feed sources, prompt wording, keyword rotation, and preferred OpenAI models.
-2. **Scheduled generation** – The workflow defined in [`.github/workflows/auto-blog.yml`](.github/workflows/auto-blog.yml) runs daily (cron `0 13 * * *`) or on demand. It installs dependencies, runs `npm run generate`, commits any new posts, builds the Eleventy site, and deploys it to GitHub Pages.
-3. **Content pipeline** – [`scripts/generate-posts.mjs`](scripts/generate-posts.mjs) fetches recent RSS items, assigns keywords round-robin, calls OpenAI with the configured prompt, and saves validated Markdown posts under `src/posts/YYYY/MM/slug/index.md` alongside YAML front matter that includes sources and metadata.
-4. **Static publishing** – `npm run build` produces an optimized site in the `_site/` directory using the Eleventy High Performance Blog stack. Lighthouse-friendly defaults remain intact.
+1. **Configuration driven** – JSON files in [`config/`](config/) control which RSS feeds are scanned, how prompts are assembled, and which keywords should be promoted.
+2. **Scripted generation** – [`scripts/generate-posts.js`](scripts/generate-posts.js) fetches the latest headlines, pairs them with rotating keywords, calls OpenAI, and saves validated Markdown posts to `src/posts/YYYY/MM/slug/index.md`.
+3. **Automated deployment** – [`.github/workflows/auto-blog.yml`](.github/workflows/auto-blog.yml) runs on a schedule defined in `config/settings.json`, commits any new posts, builds Eleventy, and deploys the site to GitHub Pages via the official Pages actions.
 
 ## Repository layout
 
 ```
-config/              Runtime configuration for feeds, prompts, models, keywords
-scripts/             Automation scripts (generate-posts.mjs)
-src/                 Site content (posts, pages, assets entrypoints)
-.cache/state.json    Keyword and GUID history to prevent duplicates
-.github/workflows/   Automation pipeline for daily publishing
+config/              Keyword, settings, writer, and prompt configuration
+scripts/             Automation utilities (generate-posts.js)
+src/                 Posts, pages, and Eleventy templates
+.cache/state.json    History of processed GUIDs and keyword usage
+.github/workflows/   Continuous delivery pipelines
 ```
 
 ### Key configuration files
 
 | File | Purpose |
 | --- | --- |
-| [`config/news.config.json`](config/news.config.json) | General automation settings: posts per run, time horizon, cron schedule, minimum/maximum word counts, timezone, RSS feeds, etc. |
-| [`config/keywords.json`](config/keywords.json) | Ordered list of primary keywords. The generator rotates through this list so every run uses the next available term. |
-| [`config/prompts.json`](config/prompts.json) | Prompt templates with `{{PLACEHOLDER}}` variables used to build the OpenAI request. Customize tone, structure, and required metadata here. |
-| [`config/models.json`](config/models.json) | Preferred OpenAI model names (`defaultModel`, `fallbackModel`). |
-| [`.cache/state.json`](.cache/state.json) | Automatically updated cache of used RSS GUIDs and keyword counters. Commit this file so runs remain deterministic. |
+| [`config/settings.json`](config/settings.json) | Automation mode, cron frequency, OpenAI model, maximum word count, and RSS feeds. |
+| [`config/keywords.json`](config/keywords.json) | Ordered list of strategic keywords that the generator rotates through. |
+| [`config/writer.json`](config/writer.json) | Tone, editorial priorities, and structural rules for the writing agent. |
+| [`config/prompts.json`](config/prompts.json) | Prompt template with `{{NEWS_HEADLINE}}` and `{{KEYWORD}}` placeholders used to build the OpenAI request. |
+| [`.cache/state.json`](.cache/state.json) | Automatically updated log of used GUIDs and keyword/date combinations to prevent duplicates. |
 
-### Secrets and repository variables
+## Required repository settings
 
-Set the following under **Settings → Secrets and variables → Actions**:
-
-| Type | Name | Notes |
-| --- | --- | --- |
-| Secret | `OPENAI_API_KEY` | Required to call the OpenAI API. Never commit this value. |
-| Variable | `NEWS_FEEDS_GENERAL` | Optional comma- or newline-separated list of additional RSS feeds. |
-| Variable | `NEWS_FEEDS_QUERY` | Optional feed template containing `{{KEYWORD}}` (URL-encoded) or `{{KEYWORD_PLAIN}}` (unencoded) placeholders for keyword-specific feeds. |
-
-Grant the repository **Actions → General → Workflow permissions → Read and write** and enable GitHub Pages deployments via GitHub Actions.
+1. **GitHub Pages** – Settings → Pages → *Build and deployment* → Select **GitHub Actions**.
+2. **Workflow permissions** – Settings → Actions → General → Workflow permissions → enable **Read and write permissions**.
+3. **Secrets** – Settings → Secrets and variables → Actions → *New repository secret* → `OPENAI_API_KEY`.
 
 ## Local development
 
-Install dependencies (Node.js 20+, see [`.nvmrc`](.nvmrc)) and run the automation locally before relying on CI:
+Install dependencies with Node.js 20, preview planned posts, and run Eleventy locally:
 
 ```bash
 npm install
-npm run generate:dry   # Preview which headlines and keywords would be used without calling OpenAI
-npm run generate       # Requires OPENAI_API_KEY in your environment
+npm run generate:dry   # Lists selected headlines, keywords, and slugs without calling OpenAI
+OPENAI_API_KEY=... npm run generate
 npm run build
 npm start              # Starts Eleventy’s dev server at http://localhost:8080/
 ```
 
-Generated posts live in `src/posts/<year>/<month>/<slug>/index.md`. Eleventy collections pick them up automatically thanks to [`src/posts/posts.11tydata.js`](src/posts/posts.11tydata.js), and the sitemap/RSS feeds are rebuilt on every deploy.
+Generated articles appear under `src/posts/<year>/<month>/<slug>/index.md`. The homepage, archives, tags, and RSS feeds update automatically using Eleventy’s collections.
 
-## Adding or editing content
+## Automation details
 
-- Update keyword rotation by editing [`config/keywords.json`](config/keywords.json).
-- Modify prompts, tone, or output structure via [`config/prompts.json`](config/prompts.json).
-- Adjust word counts, feed sources, or timezone in [`config/news.config.json`](config/news.config.json).
-- Manual posts can still be authored by adding Markdown files under `src/posts/YYYY/MM/slug/index.md` that follow the same front matter structure (including a `sources` array).
+- Headlines are sorted by recency so the “most demanded” items are prioritised.
+- Keywords rotate round-robin and are skipped if the same keyword already produced a post today.
+- Meta descriptions are normalised to 150–160 characters and include the assigned keyword exactly once.
+- The script records every publication in `.cache/state.json` so reruns stay deterministic.
+- Dry runs (`--dry-run`) never call the OpenAI API and simply print the plan.
 
-Static pages such as [About](src/about/index.md) and [Sources Policy](src/sources-policy/index.md) are maintained in `src/` and use the existing Eleventy layouts.
+## Adding or editing pages
 
-## Automation safeguards
-
-- RSS items older than the configured `horizonHours` are skipped.
-- Previously used GUIDs are tracked in `.cache/state.json` to avoid duplicates.
-- Each generated article must include at least four `##` sections and meet the configured word-count range before it is written to disk.
-- Source attribution is stored in front matter (`sources` array) and rendered by the existing post layout.
-- API failures gracefully log an error and continue processing remaining stories.
+Static content such as [About](src/about/index.md) and [Sources Policy](src/sources-policy/index.md) lives in `src/` and uses the shared Eleventy layouts. Manual posts can still be written by creating Markdown files that follow the same front matter schema as the generated articles.
 
 ## Deployment
 
-GitHub Pages is deployed through the `deploy` workflow. Successful runs upload the `_site/` directory using the official `actions/deploy-pages` action. Ensure GitHub Pages is configured to use **GitHub Actions** as the deployment source under **Settings → Pages**.
+The `auto-blog` workflow performs the following steps on each run:
 
-## Credits
+1. Check out the repository.
+2. Install dependencies (`npm ci`).
+3. Generate posts (`npm run generate`).
+4. Commit and push any changes.
+5. Build the Eleventy site (`npm run build`).
+6. Deploy to GitHub Pages using `configure-pages`, `upload-pages-artifact`, and `deploy-pages`.
 
-This project builds on Google’s Eleventy High Performance Blog starter and keeps all of its performance optimizations, including critical CSS inlining, responsive image pipelines, AMP optimization, and strong CSP defaults.
+The published site is available at **https://vladchat.github.io/blog/** once the workflow completes successfully.

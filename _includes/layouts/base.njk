@@ -13,9 +13,9 @@
     <meta http-equiv="Content-Security-Policy" content="{{ csp.regular | safe }}">
     -->
     {% if isdevelopment %}
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="{{ '/favicon.svg' | url }}" type="image/svg+xml">
     {% else %}
-    <link rel="icon" href="{{ '/img/favicon/favicon-192x192.png' | addHash }}" type="image/png">
+    <link rel="icon" href="{{ '/img/favicon/favicon-192x192.png' | addHash | url }}" type="image/png">
     {% endif %}
     <meta name="theme-color" content="#f9c412">
     <meta name="robots" content="max-snippet:-1, max-image-preview: large, max-video-preview: -1">
@@ -46,13 +46,13 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
     <link rel="alternate" href="{{ metadata.feed.path | url }}" type="application/atom+xml" title="{{ metadata.title }}">
 
-    <link rel="preconnect" href="/" crossorigin>
-    <link rel="preload" href="/fonts/Inter-3.19.var.woff2" as="font" type="font/woff2" crossorigin>
-    <script async defer src="{{ "/js/min.js" | addHash }}"
-      {% if webvitals %}data-cwv-src="{{ "/js/web-vitals.js" | addHash }}"{% endif %}>
+    <link rel="preconnect" href="{{ metadata.url }}" crossorigin>
+    <link rel="preload" href="{{ '/fonts/Inter-3.19.var.woff2' | url }}" as="font" type="font/woff2" crossorigin>
+    <script async defer src="{{ "/js/min.js" | addHash | url }}"
+      {% if webvitals %}data-cwv-src="{{ "/js/web-vitals.js" | addHash | url }}"{% endif %}>
     </script>
     {% if googleanalytics %}
-      <script async defer src="{{ "/js/cached.js" | addHash }}"></script>
+      <script async defer src="{{ "/js/cached.js" | addHash | url }}"></script>
     {% endif %}
     <!-- Notably iOS UAs also contain Mac OS X -->
     <script csp-hash>if (/Mac OS X/.test(navigator.userAgent))document.documentElement.classList.add('apple')
@@ -76,7 +76,7 @@
       <dialog id="message"></dialog>
       {% if googleanalytics %}
       <noscript>
-        <img src="/api/ga?v=1&_v=j83&t=pageview&dr=https%3A%2F%2Fno-script.com&_s=1&dh={{ metadata.domain | encodeURIComponent }}&dp={{ page.url | encodeURIComponent }}&ul=en-us&de=UTF-8&dt={{title|encodeURIComponent}}&tid={{googleanalytics}}" width="1" height="1"
+        <img src="{{ '/api/ga' | url }}?v=1&_v=j83&t=pageview&dr=https%3A%2F%2Fno-script.com&_s=1&dh={{ metadata.domain | encodeURIComponent }}&dp={{ page.url | encodeURIComponent }}&ul=en-us&de=UTF-8&dt={{title|encodeURIComponent}}&tid={{googleanalytics}}" width="1" height="1"
         style="display:none" alt="">
       </noscript>
       {% endif %}
@@ -95,7 +95,7 @@
     </main>
 
     <footer>
-      <a href="/about/">{{ metadata.author.name }}</a>
+      <a href="{{ '/about/' | url }}">{{ metadata.author.name }}</a>
     </footer>
 
     <!-- Current page: {{ page.url | url }} -->
