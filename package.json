@@ -13,7 +13,9 @@
     "debug": "DEBUG=* eleventy && npm run test",
     "test": "mocha test/test*.js",
     "test-watch": "mocha test/test*.js --watch --watch-files=test/*",
-    "clean": "rm -Rf ./_site/posts/*"
+    "clean": "rm -Rf ./dist/posts/*",
+    "generate": "node scripts/generate-posts.mjs",
+    "generate:dry": "node scripts/generate-posts.mjs --dry-run --verbose"
   },
   "pre-push": [
     "build"
@@ -58,14 +60,17 @@
     "hasha": "^5.2.0",
     "html-minifier": "^4.0.0",
     "image-size": "^0.8.3",
+    "js-yaml": "^4.1.0",
     "lru-cache": "^5.1.1",
     "mocha": "^10.1.0",
     "phin": "^3.5.0",
     "purge-from-html": "^1.0.3",
     "purgecss": "^4.0.3",
     "querystring": "^0.2.0",
+    "rss-parser": "^3.12.0",
     "rollup": "^2.23.0",
     "sharp": "^0.30.5",
+    "slugify": "^1.6.6",
     "touch": "^3.1.0",
     "twitter": "^1.7.1"
   }

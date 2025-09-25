@@ -21,9 +21,10 @@
 
 const minify = require("html-minifier").minify;
 const AmpOptimizer = require("@ampproject/toolbox-optimizer");
+const OUTPUT_DIR = require("./output-dir");
 const ampOptimizer = AmpOptimizer.create({
   blurredPlaceholders: true,
-  imageBasePath: "./_site/",
+  imageBasePath: `./${OUTPUT_DIR}/`,
   //verbose: true,
 });
 const PurgeCSS = require("purgecss").PurgeCSS;

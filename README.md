@@ -1,158 +1,81 @@
-# eleventy-high-performance-blog
+# AI-SEO News Blog
 
-A starter repository for building a blog with the [Eleventy static site generator](https://www.11ty.dev/) implementing a wide range of performance best practices.
+This repository implements a fully automated news publication built on Google’s [Eleventy High Performance Blog](https://www.industrialempathy.com/posts/eleventy-high-performance-blog/). Every day a GitHub Action gathers trusted RSS headlines, pairs them with SEO keywords, asks OpenAI to draft original coverage, and publishes the resulting Markdown to GitHub Pages.
 
-![Screenshot showing that the site achieves 100 points on Lighthouse by default](https://cdn.glitch.com/db98564e-04da-47bf-a3d6-70803c3d0fe7%2FScreen%20Shot%202020-09-04%20at%2012.07.27.png?v=1599214260591)
+## How it works
 
-Based on the awesome [eleventy-base-blog](https://github.com/11ty/eleventy-base-blog).
+1. **Configuration first** – Update the JSON files in [`config/`](config/) to control feed sources, prompt wording, keyword rotation, and preferred OpenAI models.
+2. **Scheduled generation** – The workflow defined in [`.github/workflows/auto-blog.yml`](.github/workflows/auto-blog.yml) runs daily (cron `0 13 * * *`) or on demand. It installs dependencies, runs `npm run generate`, commits any new posts, builds the Eleventy site, and deploys it to GitHub Pages.
+3. **Content pipeline** – [`scripts/generate-posts.mjs`](scripts/generate-posts.mjs) fetches recent RSS items, assigns keywords round-robin, calls OpenAI with the configured prompt, and saves validated Markdown posts under `src/posts/YYYY/MM/slug/index.md` alongside YAML front matter that includes sources and metadata.
+4. **Static publishing** – `npm run build` produces an optimized site in the `dist/` directory using the Eleventy High Performance Blog stack. Lighthouse-friendly defaults remain intact.
 
-## Demo
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fgoogle%2Feleventy-high-performance-blog)
-
-- [Demo](https://eleventy-high-performance-blog-sample.industrialempathy.com/)
-- [Original site this template was based on](https://www.industrialempathy.com/)
-
-## Getting Started
-
-### 1. Generate a new repository from this repository template
-
-Click the ["Use this template"](https://github.com/google/eleventy-high-performance-blog/generate) button. Alternatively you can clone this repo yourself and push your copy to your favorite git repository.
-
-### 2. Clone your new repository
+## Repository layout
 
 ```
-git clone https://github.com/YOUR_REPO
+config/              Runtime configuration for feeds, prompts, models, keywords
+scripts/             Automation scripts (generate-posts.mjs)
+src/                 Site content (posts, pages, assets entrypoints)
+.cache/state.json    Keyword and GUID history to prevent duplicates
+.github/workflows/   Automation pipeline for daily publishing
 ```
 
-### 3. Navigate to the directory
+### Key configuration files
 
-```
-cd my-blog-name
-```
+| File | Purpose |
+| --- | --- |
+| [`config/news.config.json`](config/news.config.json) | General automation settings: posts per run, time horizon, cron schedule, minimum/maximum word counts, timezone, RSS feeds, etc. |
+| [`config/keywords.json`](config/keywords.json) | Ordered list of primary keywords. The generator rotates through this list so every run uses the next available term. |
+| [`config/prompts.json`](config/prompts.json) | Prompt templates with `{{PLACEHOLDER}}` variables used to build the OpenAI request. Customize tone, structure, and required metadata here. |
+| [`config/models.json`](config/models.json) | Preferred OpenAI model names (`defaultModel`, `fallbackModel`). |
+| [`.cache/state.json`](.cache/state.json) | Automatically updated cache of used RSS GUIDs and keyword counters. Commit this file so runs remain deterministic. |
 
-### 4. Install dependencies
+### Secrets and repository variables
 
-```
+Set the following under **Settings → Secrets and variables → Actions**:
+
+| Type | Name | Notes |
+| --- | --- | --- |
+| Secret | `OPENAI_API_KEY` | Required to call the OpenAI API. Never commit this value. |
+| Variable | `NEWS_FEEDS_GENERAL` | Optional comma- or newline-separated list of additional RSS feeds. |
+| Variable | `NEWS_FEEDS_QUERY` | Optional feed template containing `{{KEYWORD}}` (URL-encoded) or `{{KEYWORD_PLAIN}}` (unencoded) placeholders for keyword-specific feeds. |
+
+Grant the repository **Actions → General → Workflow permissions → Read and write** and enable GitHub Pages deployments via GitHub Actions.
+
+## Local development
+
+Install dependencies (Node.js 20+, see [`.nvmrc`](.nvmrc)) and run the automation locally before relying on CI:
+
+```bash
 npm install
-```
-
-### 5. Build, serve, watch and test
-
-```
-npm run watch
-```
-
-### 6. Build and test
-
-```
+npm run generate:dry   # Preview which headlines and keywords would be used without calling OpenAI
+npm run generate       # Requires OPENAI_API_KEY in your environment
 npm run build
+npm start              # Starts Eleventy’s dev server at http://localhost:8080/
 ```
 
-## Customize
+Generated posts live in `src/posts/<year>/<month>/<slug>/index.md`. Eleventy collections pick them up automatically thanks to [`src/posts/posts.11tydata.js`](src/posts/posts.11tydata.js), and the sitemap/RSS feeds are rebuilt on every deploy.
 
-- Search for "Update me" across files in your editor to find all the site specific things you should update.
-- Update the favicons in 'img/favicon/'.
-- Otherwise: Knock yourself out. This is a template repository.
-- For a simple color override, adjust these CSS variables at the top of `css/main.css`.
+## Adding or editing content
 
-```css
-:root {
-  --primary: #e7bf60;
-  --primary-dark: #f9c412;
-}
-```
+- Update keyword rotation by editing [`config/keywords.json`](config/keywords.json).
+- Modify prompts, tone, or output structure via [`config/prompts.json`](config/prompts.json).
+- Adjust word counts, feed sources, or timezone in [`config/news.config.json`](config/news.config.json).
+- Manual posts can still be authored by adding Markdown files under `src/posts/YYYY/MM/slug/index.md` that follow the same front matter structure (including a `sources` array).
 
-## Features
+Static pages such as [About](src/about/index.md) and [Sources Policy](src/sources-policy/index.md) are maintained in `src/` and use the existing Eleventy layouts.
 
-### Performance outcomes
+## Automation safeguards
 
-- Perfect score in applicable lighthouse audits (including accessibility).
-- Single HTTP request to [First Contentful Paint](https://web.dev/first-contentful-paint/).
-- Very optimized [Largest Contentful Paint](https://web.dev/lcp/) (score depends on image usage, but images are optimized).
-- 0 [Cumulative Layout Shift](https://web.dev/cls/).
-- ~0 [First Input Delay](https://web.dev/fid/).
+- RSS items older than the configured `horizonHours` are skipped.
+- Previously used GUIDs are tracked in `.cache/state.json` to avoid duplicates.
+- Each generated article must include at least four `##` sections and meet the configured word-count range before it is written to disk.
+- Source attribution is stored in front matter (`sources` array) and rendered by the existing post layout.
+- API failures gracefully log an error and continue processing remaining stories.
 
-### Performance optimizations
+## Deployment
 
-#### Images
+GitHub Pages is deployed through the `auto-blog` workflow. Successful runs upload the `dist/` directory using the official `actions/deploy-pages` action. Ensure GitHub Pages is configured to use **GitHub Actions** as the deployment source under **Settings → Pages**.
 
-- Generates multiple sizes of each image and uses them in **`srcset`**.
-- Generates a **blurry placeholder** for each image (without adding an HTML element or using JS).
-- Transcodes images to [AVIF](<https://en.wikipedia.org/wiki/AV1#AV1_Image_File_Format_(AVIF)>) and [webp](https://developers.google.com/speed/webp) and generates `picture` element.
-- Transcodes GIFs to muted looping autoplaying MP4 videos for greatly reduced file size.
-- **Lazy loads** images (using [native `loading=lazy`](https://web.dev/native-lazy-loading/)).
-- **Async decodes** images (using `decoding=async`).
-- **Lazy layout** of images and placeholders using [`content-visibility: auto`](https://web.dev/content-visibility/#skipping-rendering-work-with-content-visibility).
-- **Avoids CLS impact** of images by inferring and providing width and height (Supported in Chrome, Firefox and Safari 14+).
-- Downloads remote images and stores/serves them locally.
-- Immutable URLs.
+## Credits
 
-#### CSS
-
-- Defaults to the compact "classless" [Bahunya CSS framework](https://kimeiga.github.io/bahunya/).
-- Inlines CSS.
-- Dead-code-eliminates / tree-shakes / purges (pick your favorite word) unused CSS on a per-page basis with [PurgeCSS](https://purgecss.com/).
-- Minified CSS with [csso](https://www.npmjs.com/package/csso).
-
-#### Miscellaneous
-
-- Immutable URLs for JS.
-- Sets immutable caching headers for images, fonts, and JS (CSS is inlined). Automatically configured when deploying on [Vercel](https://vercel.com/)
-- Uses [html-minifier](https://www.npmjs.com/package/html-minifier) with aggressive options.
-- Uses [rollup](https://rollupjs.org/) to bundle JS and minifies it with [terser](https://terser.org/).
-- Prefetches same-origin navigations when a navigation is likely.
-- If an AMP files is present, [optimizes it](https://amp.dev/documentation/guides-and-tutorials/optimize-and-measure/optimize_amp/).
-
-#### Fonts
-
-- Serves fonts from same origin.
-- Makes fonts `display:optional`.
-
-#### Analytics
-
-- Supports locally serving Google Analytics's JS and proxying it's hit requests to a Vercel Edge Function (other proxies could be easily added).
-- Supports sending [Core Web Vitals](https://web.dev/vitals/) metrics to Google Analytics as [events](https://github.com/GoogleChrome/web-vitals#send-the-results-to-google-analytics).
-- Support for noscript hit requests.
-- Avoids blocking onload on analytics requests.
-- To turn this on, specify `googleAnalyticsId` in `metadata.json`. (Note, that this is not compatible with the not-yet-commonly used version 4 of Google Analytics.)
-
-### DX features
-
-- Uses 🚨 as favicon during local development.
-- Supports a range of default tests.
-- Runs build and tests on `git push`.
-- Sourcemap generated for JS.
-
-### SEO & Social
-
-- Share button preferring `navigator.share()` and falling back to Twitter. Using OS-like share-icon.
-- Support for OGP metadata.
-- Support for Twitter metadata.
-- Support for schema.org JSON-LD.
-- Sitemap.xml generation.
-
-### Largely useless glitter
-
-- Read time estimate.
-- Animated scroll progress bar…
-- …with an optimized implementation that should never cause a layout.
-
-### Security
-
-Generates a strong [Content-Security-Policy (CSP)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) for the base template.
-
-- Default-src is self.
-- Disallows plugins.
-- Generates hash based CSP for the JS used on the site.
-- To extend the CSP with new rules, see [CSP.js](https://github.com/google/eleventy-high-performance-blog/blob/main/_data/csp.js#L22)
-
-### Build performance
-
-- Downloaded remote images, and generated sizes are cached in the local filesystem…
-- …and SHOULD be committed to git.
-- `.persistimages.sh` helps with this.
-
-## Disclaimer
-
-This is not an officially supported Google product, but rather [Malte's](https://twitter.com/cramforce) private best-effort open-source project.
+This project builds on Google’s Eleventy High Performance Blog starter and keeps all of its performance optimizations, including critical CSS inlining, responsive image pipelines, AMP optimization, and strong CSP defaults.

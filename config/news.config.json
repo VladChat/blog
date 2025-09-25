@@ -1,0 +1,14 @@
+{
+  "postsPerRun": 2,
+  "horizonHours": 48,
+  "scheduleCron": "0 13 * * *",
+  "minWords": 600,
+  "maxWords": 900,
+  "timezone": "America/Los_Angeles",
+  "rssFeeds": [
+    "https://news.google.com/rss?hl=en-US&gl=US&ceid=US:en"
+  ],
+  "minSections": 4,
+  "sourcesPerPost": 1,
+  "maxStateEntries": 200
+}

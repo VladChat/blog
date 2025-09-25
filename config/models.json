@@ -1,0 +1,4 @@
+{
+  "defaultModel": "gpt-4o-mini",
+  "fallbackModel": "gpt-4o"
+}
