@@ -1,7 +1,7 @@
 {
   "postsPerRun": 1,
   "horizonHours": 96,
-"scheduleCron": "0 9 * * 1"
+"scheduleCron": "0 9 * * 1",
   "minWords": 1000,
   "maxWords": 3000,
   "timezone": "America/Los_Angeles",
