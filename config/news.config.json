@@ -1,14 +1,15 @@
 {
-  "postsPerRun": 2,
-  "horizonHours": 48,
-  "scheduleCron": "0 13 * * *",
-  "minWords": 600,
-  "maxWords": 900,
-  "timezone": "America/Los_Angeles",
-  "rssFeeds": [
-    "https://news.google.com/rss?hl=en-US&gl=US&ceid=US:en"
+  "postsPerRun": 1,              // How many blog posts to generate each time the script runs
+  "horizonHours": 24,            // Lookback window (in hours) to consider news from RSS feeds
+  "scheduleCron": "0 13 * * *",  // Cron schedule for automation: run every day at 13:00 (1 PM) server time
+  "minWords": 1200,               // Minimum word count for each generated blog post
+  "maxWords": 1400,               // Maximum word count for each generated blog post
+  "timezone": "America/Los_Angeles", // Local timezone to interpret cron schedule (Pacific Time in this case)
+  "rssFeeds": [                  // List of RSS feeds to pull source news/content ideas from
+    "https://news.google.com/rss?hl=en-US&gl=US&ceid=US:en",
+    "https://feeds.feedburner.com/breakingtravelnews"
   ],
-  "minSections": 4,
-  "sourcesPerPost": 1,
-  "maxStateEntries": 200
+  "minSections": 4,              // Minimum number of sections per blog post (helps enforce structure)
+  "sourcesPerPost": 1,           // How many distinct RSS/news articles to use as source material per blog
+  "maxStateEntries": 200         // How many past entries to keep in memory/state (prevents reusing the same stories)
 }
