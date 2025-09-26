@@ -200,7 +200,6 @@ async function callOpenAI({ apiKey, model, systemPrompt, userPrompt }) {
     },
     body: JSON.stringify({
       model,
-      temperature: 0.7,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
