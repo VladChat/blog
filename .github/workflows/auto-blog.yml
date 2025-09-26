@@ -79,4 +79,6 @@ jobs:
 
       - name: Build site
         run: npm run build
+        env:
+          ELEVENTY_PATH_PREFIX: /blog/
 
