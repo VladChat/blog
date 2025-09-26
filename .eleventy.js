@@ -59,11 +59,8 @@ const localImages = require("./third_party/eleventy-plugin-local-images/.elevent
 const CleanCSS = require("clean-css");
 const GA_ID = require("./_data/metadata.json").googleAnalyticsId;
 const OUTPUT_DIR = require("./_11ty/output-dir");
-const DEFAULT_PATH_PREFIX = "/";
 
 module.exports = function (eleventyConfig) {
-  const pathPrefix = process.env.ELEVENTY_PATH_PREFIX || DEFAULT_PATH_PREFIX;
-
   eleventyConfig.addPlugin(pluginRss);
   eleventyConfig.addPlugin(pluginSyntaxHighlight);
   eleventyConfig.addPlugin(pluginNavigation);
@@ -228,17 +225,7 @@ module.exports = function (eleventyConfig) {
   return {
     templateFormats: ["md", "njk", "html", "liquid"],
 
-    pathPrefix,
-
-    // If your site lives in a different subdirectory, change this.
-    // Leading or trailing slashes are all normalized away, so don’t worry about those.
-
-    // If you don’t have a subdirectory, use "" or "/" (they do the same thing)
-    // This is only used for link URLs (it does not affect your file structure)
-    // Best paired with the `url` filter: https://www.11ty.io/docs/filters/url/
-
-    // You can also pass this in on the command line using `--pathprefix`
-    // pathPrefix: "/",
+    pathPrefix: "/",
 
     markdownTemplateEngine: "liquid",
     htmlTemplateEngine: "njk",
