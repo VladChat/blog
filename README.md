@@ -5,7 +5,7 @@ This repository implements a fully automated news publication built on Google’
 ## How it works
 
 1. **Configuration first** – Update the JSON files in [`config/`](config/) to control feed sources, prompt wording, keyword rotation, and preferred OpenAI models.
-2. **Scheduled generation** – The workflow defined in [`.github/workflows/auto-blog.yml`](.github/workflows/auto-blog.yml) runs daily (cron `0 13 * * *`) or on demand. It installs dependencies, runs `npm run generate`, commits any new posts, builds the Eleventy site, and deploys it to GitHub Pages.
+2. **Scheduled generation** – The workflow defined in [`.github/workflows/auto-blog.yml`](.github/workflows/auto-blog.yml) runs on the cron expression defined by `scheduleCron` in [`config/news.config.json`](config/news.config.json) (default `0 16,18,20,22 * * *`) or on demand. It installs dependencies, runs `npm run generate`, commits any new posts, builds the Eleventy site, and deploys it to GitHub Pages.
 3. **Content pipeline** – [`scripts/generate-posts.mjs`](scripts/generate-posts.mjs) fetches recent RSS items, assigns keywords round-robin, calls OpenAI with the configured prompt, and saves validated Markdown posts under `src/posts/YYYY/MM/slug/index.md` alongside YAML front matter that includes sources and metadata.
 4. **Static publishing** – `npm run build` produces an optimized site in the `_site/` directory using the Eleventy High Performance Blog stack. Lighthouse-friendly defaults remain intact.
 
@@ -54,6 +54,15 @@ npm start              # Starts Eleventy’s dev server at http://localhost:8080
 ```
 
 Generated posts live in `src/posts/<year>/<month>/<slug>/index.md`. Eleventy collections pick them up automatically thanks to [`src/posts/posts.11tydata.js`](src/posts/posts.11tydata.js), and the sitemap/RSS feeds are rebuilt on every deploy.
+
+## Usage
+
+To change the publishing cadence, edit the `scheduleCron` value in [`config/news.config.json`](config/news.config.json).
+
+- `"0 16,18,20,22 * * *"` → run at 16:00, 18:00, 20:00, and 22:00 UTC every day.
+- `"0 9 * * *"` → run once daily at 09:00 UTC.
+
+GitHub Actions automatically syncs its workflow schedule to match this configuration on the next run.
 
 ## Adding or editing content
 
