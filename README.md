@@ -85,6 +85,8 @@ Static pages such as [About](src/about/index.md) and [Sources Policy](src/source
 
 GitHub Pages is deployed through the `deploy` workflow. Successful runs upload the `_site/` directory using the official `actions/deploy-pages` action. Ensure GitHub Pages is configured to use **GitHub Actions** as the deployment source under **Settings → Pages**.
 
+When hosting the site in a subdirectory (for example, `https://example.com/blog/`), set the `ELEVENTY_PATH_PREFIX` environment variable to that path (including the leading and trailing slashes) before running `npm run build` or the GitHub Pages workflow. The Eleventy configuration reads this value and applies it to generated URLs; it defaults to `/` for root deployments.
+
 ## Credits
 
 This project builds on Google’s Eleventy High Performance Blog starter and keeps all of its performance optimizations, including critical CSS inlining, responsive image pipelines, AMP optimization, and strong CSP defaults.
