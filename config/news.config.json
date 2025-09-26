@@ -1,15 +1,15 @@
 {
-  "postsPerRun": 1,
-  "horizonHours": 24,
-  "scheduleCron": "0 13 * * *",
-  "minWords": 1200,
-  "maxWords": 1400,
-  "timezone": "America/Los_Angeles",
-  "rssFeeds": [
+  "postsPerRun": 1,              
+  "horizonHours": 24,            
+  "scheduleCron": "0 16,18,20,22 * * *",  
+  "minWords": 1200,              
+  "maxWords": 1400,              
+  "timezone": "America/Los_Angeles", 
+  "rssFeeds": [                  
     "https://news.google.com/rss?hl=en-US&gl=US&ceid=US:en",
     "https://feeds.feedburner.com/breakingtravelnews"
   ],
-  "minSections": 4,
-  "sourcesPerPost": 1,
-  "maxStateEntries": 200
+  "minSections": 5,              
+  "sourcesPerPost": 1,           
+  "maxStateEntries": 200         
 }
