@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build-and-publish:
+  generate-and-commit:
     runs-on: ubuntu-latest
     env:
       NEWS_FEEDS_GENERAL: ${{ vars.NEWS_FEEDS_GENERAL }}
@@ -76,11 +76,3 @@ jobs:
             REF=main
           fi
           git push origin HEAD:"$REF"
-
-      - name: Clean _site
-        run: rm -rf _site
-
-      - name: Build site
-        run: npm run build
-        env:
-          ELEVENTY_PATH_PREFIX: /blog/
