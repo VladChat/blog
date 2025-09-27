@@ -60,6 +60,22 @@ const CleanCSS = require("clean-css");
 const GA_ID = require("./_data/metadata.json").googleAnalyticsId;
 const OUTPUT_DIR = require("./_11ty/output-dir");
 
+function normalizePathPrefix(prefix) {
+  if (!prefix) {
+    return "/";
+  }
+
+  let normalized = prefix.startsWith("/") ? prefix : `/${prefix}`;
+
+  if (normalized.length > 1 && normalized.endsWith("/")) {
+    normalized = normalized.slice(0, -1);
+  }
+
+  return normalized;
+}
+
+const pathPrefix = normalizePathPrefix(process.env.ELEVENTY_PATH_PREFIX || "/");
+
 module.exports = function (eleventyConfig) {
   eleventyConfig.addPlugin(pluginRss);
   eleventyConfig.addPlugin(pluginSyntaxHighlight);
@@ -225,7 +241,7 @@ module.exports = function (eleventyConfig) {
   return {
     templateFormats: ["md", "njk", "html", "liquid"],
 
-    pathPrefix: "/blog",
+    pathPrefix,
 
     markdownTemplateEngine: "liquid",
     htmlTemplateEngine: "njk",
