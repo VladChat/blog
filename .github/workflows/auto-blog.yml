@@ -2,7 +2,8 @@ name: Automated AI-SEO Blog
 
 on:
   schedule:
-    - cron: "0 16,18,20,22 * * *"
+    # Placeholder – actual cron will be synced from config by update-workflow.mjs
+    - cron: "0 0 * * *"
   workflow_dispatch:
 
 permissions:
@@ -53,6 +54,10 @@ jobs:
             git add .cache/state.json
           fi
 
+          # 👇 Force a rebuild by touching a harmless file
+          echo "Last build: $(date -u)" > last_build.txt
+          git add last_build.txt
+
           if git diff --cached --quiet; then
             echo "changes=false" >> "$GITHUB_OUTPUT"
             exit 0
@@ -76,17 +81,3 @@ jobs:
             REF=main
           fi
           git push origin HEAD:"$REF"
-
-      # Keep a local build here, but make it match Pages and start clean
-      - name: Clean _site
-        run: rm -rf _site
-
-      - name: Build site (must match Pages)
-        env:
-          ELEVENTY_PATH_PREFIX: /blog/
-        run: npm run build
-
-      # Optional sanity check so the job fails loudly if the build is empty
-      - name: Verify build produced index
-        run: |
-          test -f _site/index.html || (echo "ERROR: _site/index.html missing" && exit 1)
