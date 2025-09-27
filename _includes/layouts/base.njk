@@ -58,6 +58,15 @@
     <script csp-hash>if (/Mac OS X/.test(navigator.userAgent))document.documentElement.classList.add('apple')
     </script>
     <!-- css is inserted by optimize-html custom plugin -->
+    <style>
+      share-widget div {
+        background-image: url("{{ '/img/share.svg' | url }}");
+      }
+
+      .apple share-widget div {
+        background-image: url("{{ '/img/share-apple.svg' | url }}");
+      }
+    </style>
   </head>
   <body>
     <header>
