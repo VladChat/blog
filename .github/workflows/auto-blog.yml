@@ -2,12 +2,14 @@ name: Automated AI-SEO Blog
 
 on:
   schedule:
-    # Placeholder – actual cron will be synced from config by update-workflow.mjs
+    # Placeholder – real cron is synced by update-workflow.mjs
     - cron: "0 0 * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 concurrency:
   group: ai-seo-blog
@@ -40,44 +42,14 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: npm run generate
 
-      - name: Commit changes
-        id: commit
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Build site
+        run: npm run build
+        env:
+          ELEVENTY_PATH_PREFIX: /blog/
 
-          if [[ -d src/posts ]]; then
-            git add src/posts/
-          fi
-
-          if [[ -f .cache/state.json ]]; then
-            git add .cache/state.json
-          fi
-
-          # 👇 Force a rebuild by touching a harmless file
-          echo "Last build: $(date -u)" > last_build.txt
-          git add last_build.txt
-
-          if git diff --cached --quiet; then
-            echo "changes=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          FIRST_POST=$(git diff --cached --name-only | grep '^src/posts/' | head -n 1)
-          if [[ -n "$FIRST_POST" ]]; then
-            SLUG=$(basename "$(dirname "$FIRST_POST")")
-          else
-            SLUG=$(date -u +"%H%M%S")
-          fi
-
-          git commit -m "chore(auto): add post $(date -u +"%Y-%m-%d")-$SLUG"
-          echo "changes=true" >> "$GITHUB_OUTPUT"
-
-      - name: Push changes
-        if: steps.commit.outputs.changes == 'true'
-        run: |
-          REF="${{ github.ref_name }}"
-          if [[ -z "$REF" ]]; then
-            REF=main
-          fi
-          git push origin HEAD:"$REF"
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./_site
+          publish_branch: gh-pages
