@@ -77,10 +77,16 @@ jobs:
           fi
           git push origin HEAD:"$REF"
 
+      # Keep a local build here, but make it match Pages and start clean
       - name: Clean _site
         run: rm -rf _site
 
-      - name: Build site
-        run: npm run build
+      - name: Build site (must match Pages)
         env:
           ELEVENTY_PATH_PREFIX: /blog/
+        run: npm run build
+
+      # Optional sanity check so the job fails loudly if the build is empty
+      - name: Verify build produced index
+        run: |
+          test -f _site/index.html || (echo "ERROR: _site/index.html missing" && exit 1)
