@@ -1,0 +1,26 @@
+{
+  "title": "UPATCH Luggage Scale",
+  "url": "https://vladchat.github.io/blog",
+  "domain": "vladchat.github.io",
+  "description": "Travel Smart with the battery-free UPATCH luggage scale — reliable, portable, and eco-friendly.",
+  "genre": "Travel, Accessories, Consumer Electronics",
+  "googleAnalyticsId": "",
+  "sendWebVitals": false,
+  "feed": {
+    "subtitle": "Latest travel news, insights, and product updates from UPATCH",
+    "filename": "feed.xml",
+    "path": "/feed/feed.xml",
+    "id": "https://vladchat.github.io/blog"
+  },
+  "jsonfeed": {
+    "path": "/feed/feed.json",
+    "url": "https://vladchat.github.io/blog/feed/feed.json"
+  },
+  "author": {
+    "name": "UPATCH Editorial Team",
+    "twitterHandle": ""
+  },
+  "publisher": {
+    "name": "UPATCH Editorial"
+  }
+}

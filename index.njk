@@ -1,0 +1,23 @@
+---
+title: uPatch Luggage Scale
+layout: layouts/home.njk
+description: Expert travel guides, baggage allowance hacks, and tips for using the battery-free uPatch luggage scale. Make your trips lighter and stress-free.
+image: /img/share.svg
+date: Last Modified
+---
+
+<p>
+  Welcome to the official <strong>uPatch Travel Blog</strong>, where we share guides, smart packing strategies, and the latest tips for stress-free travel.  
+  Our focus: helping travelers avoid baggage surprises with the <em>battery-free shake-to-charge uPatch luggage scale</em>.
+</p>
+
+<div id="posts">
+  <h2>Latest Posts</h2>
+  <ul>
+    {% for post in collections.post %}
+      <li>
+        <a href="{{ post.url | url }}">{{ post.data.title }}</a> – {{ post.date | date("dd MMM yyyy") }}
+      </li>
+    {% endfor %}
+  </ul>
+</div>
