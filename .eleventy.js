@@ -225,7 +225,7 @@ module.exports = function (eleventyConfig) {
   return {
     templateFormats: ["md", "njk", "html", "liquid"],
 
-    pathPrefix: "/",
+    pathPrefix: "/blog",
 
     markdownTemplateEngine: "liquid",
     htmlTemplateEngine: "njk",
