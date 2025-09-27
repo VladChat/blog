@@ -13,7 +13,7 @@ templateClass: tmpl-post
    </aside>
 {% endblock %}
 
-{% set shareUrl = metadata.url + page.url %}
+{% set shareUrl = page.url | url | absoluteUrl(metadata.url) %}
 
 {% block article %}
 {{ content | safe }}
@@ -44,11 +44,11 @@ templateClass: tmpl-post
     "name": "{{ metadata.publisher.name }}",
     "logo": {
       "@type": "ImageObject",
-      "url": "{{ '/img/favicon/favicon-192x192.png' | addHash }}"
+      "url": "{{ '/img/favicon/favicon-192x192.png' | addHash | url | absoluteUrl(metadata.url) }}"
     }
   },
-  "url": "{{ metadata.url }}{{ canonicalUrl or page.url }}",
-  "mainEntityOfPage": "{{ metadata.url }}{{ canonicalUrl or page.url }}",
+  "url": "{{ (canonicalUrl or page.url) | url | absoluteUrl(metadata.url) }}",
+  "mainEntityOfPage": "{{ (canonicalUrl or page.url) | url | absoluteUrl(metadata.url) }}",
   "datePublished": "{{ page.date | htmlDateString }}",
   "dateModified": "{{ page.inputPath | lastModifiedDate  | htmlDateString }}",
   "description": "{{ content | striptags | truncate(140) }}"
