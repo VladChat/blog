@@ -77,8 +77,10 @@ jobs:
           fi
           git push origin HEAD:"$REF"
 
+      - name: Clean _site
+        run: rm -rf _site
+
       - name: Build site
         run: npm run build
         env:
           ELEVENTY_PATH_PREFIX: /blog/
-
