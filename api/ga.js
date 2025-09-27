@@ -12,7 +12,7 @@ export const config = {
   runtime: "experimental-edge",
 };
 
-export default async function (req, event) {
+async function handler(req, event) {
   const url = new URL(req.url);
   if (req.method === "GET" && !url.search) {
     return new Response("OK", { status: 200 });
@@ -47,6 +47,8 @@ export default async function (req, event) {
   return new Response("D", { status: 200, headers });
 }
 
+export default handler;
+
 function allowlistDomain(domain, addWww = true) {
   const prefixes = ["https://", "http://"];
   if (addWww) {
@@ -57,12 +59,10 @@ function allowlistDomain(domain, addWww = true) {
 }
 
 async function cid(ip, otherStuff) {
-  if (ip) {
+  const hasInput = (ip && ip.length > 0) || (otherStuff && otherStuff.length > 0);
+  if (hasInput) {
     const encoder = new TextEncoder();
-    const data = encoder.encode(
-      "sha256",
-      ip + otherStuff + "this is open source"
-    );
+    const data = encoder.encode(`${ip || ""}${otherStuff || ""}this is open source`);
     const hashBuffer = await crypto.subtle.digest("SHA-256", data);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     const hashHex = hashArray
@@ -82,14 +82,15 @@ async function proxyToGoogleAnalytics(req, url, body) {
   const headers = req.headers;
 
   // attach other GA params, required for IP address since client doesn't have access to it. UA and CID can be sent from client
-  params.set(
-    "uip",
-    headers.get("x-forwarded-for") || headers.get("x-bb-ip") || ""
-  ); // ip override. Look into headers for clients IP address, as opposed to IP address of host running lambda function
-  params.set("ua", params.get("ua") || headers.get("user-agent") || ""); // user agent override
+  const resolvedIp =
+    headers.get("x-forwarded-for") || headers.get("x-bb-ip") || "";
+  params.set("uip", resolvedIp); // ip override. Look into headers for clients IP address, as opposed to IP address of host running lambda function
+
+  const userAgent = params.get("ua") || headers.get("user-agent") || "";
+  params.set("ua", userAgent); // user agent override
   params.set(
     "cid",
-    params.get("cid") || (await cid(params.get("uip", params.get("ua"))))
+    params.get("cid") || (await cid(resolvedIp, userAgent))
   );
 
   const qs = params.toString();
@@ -118,6 +119,12 @@ async function proxyToGoogleAnalytics(req, url, body) {
     result.status,
     result.statusText
   );
+}
+
+export { cid };
+
+if (typeof module !== "undefined") {
+  module.exports = { default: handler, cid };
 }
 
 /*
