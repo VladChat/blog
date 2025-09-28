@@ -21,7 +21,7 @@
         },
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "n/a"
+          "value": "*"
         }
       ]
     },
