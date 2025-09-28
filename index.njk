@@ -4,6 +4,12 @@ layout: layouts/home.njk
 description: Expert travel guides, baggage allowance hacks, and tips for using the battery-free uPatch luggage scale. Make your trips lighter and stress-free.
 image: /img/hero-luggage-scale.svg
 date: Last Modified
+pagination:
+  data: collections.post
+  size: 10
+  alias: posts
+  reverse: true
+permalink: "/blog/{% if pagination.pageNumber > 0 %}page/{{ pagination.pageNumber + 1 }}/{% endif %}"
 ---
 
 <p>
@@ -14,7 +20,7 @@ date: Last Modified
 <div id="posts">
   <h2>Latest Posts</h2>
   <ul>
-    {% for post in collections.post %}
+    {% for post in pagination.items %}
       <li>
         {% set pathPrefix = '/' | url %}
         {% set postHref = post.url %}
@@ -26,3 +32,23 @@ date: Last Modified
     {% endfor %}
   </ul>
 </div>
+
+<nav class="pagination">
+  <ul>
+    {% if pagination.href.previous %}
+      <li class="pagination__prev"><a href="{{ pagination.href.previous | url }}">Previous</a></li>
+    {% endif %}
+
+    {% for pageHref in pagination.hrefs %}
+      {% set pageIndex = loop.index0 %}
+      {% set pageNumber = pageIndex + 1 %}
+      <li class="pagination__page{% if pageIndex == pagination.pageNumber %} is-current{% endif %}">
+        <a href="{{ pageHref | url }}">{{ pageNumber }}</a>
+      </li>
+    {% endfor %}
+
+    {% if pagination.href.next %}
+      <li class="pagination__next"><a href="{{ pagination.href.next | url }}">Next</a></li>
+    {% endif %}
+  </ul>
+</nav>
