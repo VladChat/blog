@@ -59,6 +59,7 @@ const localImages = require("./third_party/eleventy-plugin-local-images/.elevent
 const CleanCSS = require("clean-css");
 const GA_ID = require("./_data/metadata.json").googleAnalyticsId;
 const OUTPUT_DIR = require("./_11ty/output-dir");
+const PATH_PREFIX = "/blog/";
 
 module.exports = function (eleventyConfig) {
   eleventyConfig.addPlugin(pluginRss);
@@ -82,14 +83,21 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addNunjucksAsyncFilter(
     "addHash",
     function (absolutePath, callback) {
-      readFile(path.join(".", absolutePath), {
+      const normalizedPath = absolutePath.replace(/^\/+/, "");
+      readFile(path.join(".", normalizedPath), {
         encoding: "utf-8",
       })
         .then((content) => {
           return hasha.async(content);
         })
         .then((hash) => {
-          callback(null, `${absolutePath}?hash=${hash.substr(0, 10)}`);
+          const normalizedPrefix = PATH_PREFIX.endsWith("/")
+            ? PATH_PREFIX
+            : `${PATH_PREFIX}/`;
+          callback(
+            null,
+            `${normalizedPrefix}${normalizedPath}?hash=${hash.substr(0, 10)}`
+          );
         })
         .catch((error) => {
           callback(
@@ -225,7 +233,7 @@ module.exports = function (eleventyConfig) {
   return {
     templateFormats: ["md", "njk", "html", "liquid"],
 
-    pathPrefix: "/blog/",
+    pathPrefix: PATH_PREFIX,
 
     // If your site lives in a different subdirectory, change this.
     // Leading or trailing slashes are all normalized away, so don’t worry about those.
