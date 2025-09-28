@@ -16,7 +16,12 @@ date: Last Modified
   <ul>
     {% for post in collections.post %}
       <li>
-        <a href="{{ post.url }}">{{ post.data.title }}</a> – {{ post.date | date("dd MMM yyyy") }}
+        {% set pathPrefix = '/' | url %}
+        {% set postHref = post.url %}
+        {% if pathPrefix != '/' and postHref.indexOf(pathPrefix) == 0 %}
+          {% set postHref = postHref | replace(pathPrefix, '/') %}
+        {% endif %}
+        <a href="{{ postHref | url }}">{{ post.data.title }}</a> – {{ post.date | date("dd MMM yyyy") }}
       </li>
     {% endfor %}
   </ul>
