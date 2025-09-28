@@ -59,11 +59,7 @@ const localImages = require("./third_party/eleventy-plugin-local-images/.elevent
 const CleanCSS = require("clean-css");
 const GA_ID = require("./_data/metadata.json").googleAnalyticsId;
 const OUTPUT_DIR = require("./_11ty/output-dir");
-<<<<<<< HEAD
 const PATH_PREFIX = "/blog/";
-=======
-const PATH_PREFIX = "/";
->>>>>>> 96517f1 (Auto-deploy 2025-09-28 15:16)
 
 module.exports = function (eleventyConfig) {
   eleventyConfig.addPlugin(pluginRss);
@@ -122,11 +118,13 @@ module.exports = function (eleventyConfig) {
       return new Date(stdout);
     } catch (e) {
       console.error(e.message);
+      // Fallback to stat if git isn't working.
       const stats = await stat(filename);
-      return stats.mtime;
+      return stats.mtime; // Date
     }
   }
-
+  // Cache the lastModifiedDate call because shelling out to git is expensive.
+  // This means the lastModifiedDate will never change per single eleventy invocation.
   const lastModifiedDateCache = new Map();
   eleventyConfig.addNunjucksAsyncFilter(
     "lastModifiedDate",
@@ -167,6 +165,7 @@ module.exports = function (eleventyConfig) {
     return DateTime.fromJSDate(jsDate, { zone: "utc" }).toFormat(format);
   });
 
+  // https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-date-string
   eleventyConfig.addFilter("htmlDateString", (dateObj) => {
     return DateTime.fromJSDate(dateObj, { zone: "utc" }).toFormat("yyyy-LL-dd");
   });
@@ -179,10 +178,12 @@ module.exports = function (eleventyConfig) {
     return dt.toISO();
   });
 
+  // Get the first `n` elements of a collection.
   eleventyConfig.addFilter("head", (array, n) => {
     if (n < 0) {
       return array.slice(n);
     }
+
     return array.slice(0, n);
   });
 
@@ -197,14 +198,20 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addCollection("tagList", require("./_11ty/getTagList"));
   eleventyConfig.addPassthroughCopy("img");
   eleventyConfig.addPassthroughCopy("css");
+  // We need to copy cached.js only if GA is used
   eleventyConfig.addPassthroughCopy(GA_ID ? "js" : "js/*[!cached].*");
   eleventyConfig.addPassthroughCopy("fonts");
   eleventyConfig.addPassthroughCopy("_headers");
 
+  // We need to rebuild upon JS change to update the CSP.
   eleventyConfig.addWatchTarget("./js/");
+  // We need to rebuild on CSS change to inline it.
   eleventyConfig.addWatchTarget("./css/");
+  // Unfortunately this means .eleventyignore needs to be maintained redundantly.
+  // But without this the JS build artefacts doesn't trigger a build.
   eleventyConfig.setUseGitIgnore(false);
 
+  /* Markdown Overrides */
   let markdownLibrary = markdownIt({
     html: true,
     breaks: true,
@@ -216,6 +223,7 @@ module.exports = function (eleventyConfig) {
   });
   eleventyConfig.setLibrary("md", markdownLibrary);
 
+  // After the build touch any file in the test directory to do a test run.
   eleventyConfig.on("afterBuild", async () => {
     const files = await readdir("test");
     for (const file of files) {
@@ -226,7 +234,6 @@ module.exports = function (eleventyConfig) {
 
   return {
     templateFormats: ["md", "njk", "html", "liquid"],
-<<<<<<< HEAD
 
     pathPrefix: PATH_PREFIX,
 
@@ -240,16 +247,16 @@ module.exports = function (eleventyConfig) {
     // You can also pass this in on the command line using `--pathprefix`
     // pathPrefix: "/",
 
-=======
-    pathPrefix: PATH_PREFIX,
->>>>>>> 96517f1 (Auto-deploy 2025-09-28 15:16)
     markdownTemplateEngine: "liquid",
     htmlTemplateEngine: "njk",
     dataTemplateEngine: "njk",
+
+    // These are all optional, defaults are shown:
     dir: {
       input: ".",
       includes: "_includes",
       data: "_data",
+      // Warning hardcoded throughout repo. Find and replace is your friend :)
       output: OUTPUT_DIR,
     },
   };
