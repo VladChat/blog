@@ -79,11 +79,6 @@ async function updateWorkflowCron(cronExpression) {
 }
 
 async function commitChangesIfNeeded() {
-  const allowCommit = process.env.UPDATE_WORKFLOW_ALLOW_COMMIT === 'true';
-  if (process.env.GITHUB_ACTIONS === 'true' && !allowCommit) {
-    console.log('[update-workflow] Skipping commit while running in GitHub Actions.');
-    return;
-  }
   try {
     await execFileAsync('git', ['config', 'user.name', 'github-actions[bot]']);
     await execFileAsync('git', [

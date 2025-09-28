@@ -28,7 +28,7 @@ module.exports = () => {
         const relative = stem
           .replace(/^posts\//, "")
           .replace(/\/index$/, "");
-        return `/posts/${relative}/index.html`;
+        return `/blog/posts/${relative}/index.html`;
       },
     },
     tags: ["posts"],

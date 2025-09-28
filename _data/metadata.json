@@ -1,26 +1,26 @@
 {
-  "title": "UPATCH Luggage Scale",
-  "url": "https://vladchat.github.io/blog",
-  "domain": "vladchat.github.io",
-  "description": "Travel Smart with the battery-free UPATCH luggage scale — reliable, portable, and eco-friendly.",
-  "genre": "Travel, Accessories, Consumer Electronics",
-  "googleAnalyticsId": "",
+  "title": "Title of the website. Update me.",
+  "url": "https://update-me.com",
+  "domain": "update-me.com",
+  "description": "Description of the website. Update me.",
+  "genre": "Insert a schema.org genre",
+  "googleAnalyticsId": "GA ID. Update me. Note, that this is not compatible with the not-yet-commonly used version 4 of Google Analytics",
   "sendWebVitals": false,
   "feed": {
-    "subtitle": "Latest travel news, insights, and product updates from UPATCH",
+    "subtitle": "Subtitle. Update me.",
     "filename": "feed.xml",
     "path": "/feed/feed.xml",
-    "id": "https://vladchat.github.io/blog"
+    "id": "https://update-me.com"
   },
   "jsonfeed": {
     "path": "/feed/feed.json",
-    "url": "https://vladchat.github.io/blog/feed/feed.json"
+    "url": "https://update-me.com/feed/feed.json"
   },
   "author": {
-    "name": "UPATCH Editorial Team",
-    "twitterHandle": ""
+    "name": "Author Name. Update me.",
+    "twitterHandle": "update_me"
   },
   "publisher": {
-    "name": "UPATCH Editorial"
+    "name": "Publisher name. Update me."
   }
 }

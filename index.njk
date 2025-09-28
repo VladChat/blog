@@ -2,7 +2,7 @@
 title: uPatch Luggage Scale
 layout: layouts/home.njk
 description: Expert travel guides, baggage allowance hacks, and tips for using the battery-free uPatch luggage scale. Make your trips lighter and stress-free.
-image: /img/share.svg
+image: /blog/static/logo.svg
 date: Last Modified
 ---
 
@@ -16,7 +16,7 @@ date: Last Modified
   <ul>
     {% for post in collections.post %}
       <li>
-        <a href="{{ post.url | url }}">{{ post.data.title }}</a> – {{ post.date | date("dd MMM yyyy") }}
+        <a href="{{ post.url }}">{{ post.data.title }}</a> – {{ post.date | date("dd MMM yyyy") }}
       </li>
     {% endfor %}
   </ul>

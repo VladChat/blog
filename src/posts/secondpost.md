@@ -25,7 +25,7 @@ Capitalize on low hanging fruit to identify a ballpark value added activity to b
 
 # Test Relative Local Image
 
-![Test Share SVG](../../img/doener.jpg)
+![Test Share SVG](/img/doener.jpg)
 
 # Test PNG
 
