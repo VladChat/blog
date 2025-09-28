@@ -11,7 +11,8 @@ eleventyExcludeFromCollections: true
   "description": "{{ metadata.description }}",
   "author": {
     "name": "{{ metadata.author.name }}",
-    "url": "{{ metadata.author.url }}"
+    "url": "{{ metadata.author.url }}",
+    "email": "{{ metadata.author.email }}"
   },
   "items": [
     {%- for post in collections.posts | reverse %}
