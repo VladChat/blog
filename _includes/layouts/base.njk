@@ -15,7 +15,7 @@
     {% if isdevelopment %}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     {% else %}
-    <link rel="icon" href="{{ '/img/favicon/favicon-192x192.png' | addHash }}" type="image/png">
+    <link rel="icon" href="{{ 'img/favicon/favicon-192x192.png' | addHash }}" type="image/png">
     {% endif %}
     <meta name="theme-color" content="#f9c412">
     <meta name="robots" content="max-snippet:-1, max-image-preview: large, max-video-preview: -1">
@@ -48,11 +48,11 @@
 
     <link rel="preconnect" href="/" crossorigin>
     <link rel="preload" href="/fonts/Inter-3.19.var.woff2" as="font" type="font/woff2" crossorigin>
-    <script async defer src="{{ "/js/min.js" | addHash }}"
-      {% if webvitals %}data-cwv-src="{{ "/js/web-vitals.js" | addHash }}"{% endif %}>
+    <script async defer src="{{ 'js/min.js' | addHash }}"
+      {% if webvitals %}data-cwv-src="{{ 'js/web-vitals.js' | addHash }}"{% endif %}>
     </script>
     {% if googleanalytics %}
-      <script async defer src="{{ "/js/cached.js" | addHash }}"></script>
+      <script async defer src="{{ 'js/cached.js' | addHash }}"></script>
     {% endif %}
     <!-- Notably iOS UAs also contain Mac OS X -->
     <script csp-hash>if (/Mac OS X/.test(navigator.userAgent))document.documentElement.classList.add('apple')
