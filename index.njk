@@ -9,7 +9,11 @@ pagination:
   size: 10
   alias: posts
   reverse: true
+<<<<<<< HEAD
 permalink: "/blog/{% if pagination.pageNumber > 0 %}page/{{ pagination.pageNumber + 1 }}/{% endif %}"
+=======
+permalink: "{% if pagination.pageNumber > 0 %}page/{{ pagination.pageNumber + 1 }}/{% endif %}"
+>>>>>>> 96517f1 (Auto-deploy 2025-09-28 15:16)
 ---
 
 <p>
