@@ -181,12 +181,25 @@ function countWords(text) {
     .filter(Boolean).length;
 }
 
-function buildBody(sections) {
+function buildBody(sections, { baseHeadingLevel = 2 } = {}) {
+  const normalizedBase = Math.min(Math.max(baseHeadingLevel, 1), 6);
+
   return sections
     .map(({ heading, body }) => {
       const safeHeading = heading.replace(/\n/g, " ").trim();
       const safeBody = body.trim();
-      return `## ${safeHeading}\n\n${safeBody}`;
+
+      const headingMatch = safeHeading.match(/^(#{1,6})\s*(.*)$/);
+      const headingText = headingMatch ? headingMatch[2].trim() : safeHeading;
+      const explicitLevel = headingMatch ? headingMatch[1].length : 0;
+      const finalLevel = Math.min(
+        Math.max(explicitLevel || normalizedBase, normalizedBase),
+        6
+      );
+      const prefix = "#".repeat(finalLevel || normalizedBase);
+      const normalizedHeading = headingText ? `${prefix} ${headingText}` : prefix;
+
+      return `${normalizedHeading}\n\n${safeBody}`;
     })
     .join("\n\n");
 }
