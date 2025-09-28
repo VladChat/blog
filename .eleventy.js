@@ -188,7 +188,9 @@ module.exports = function (eleventyConfig) {
   });
 
   eleventyConfig.addCollection("post", function (collectionApi) {
-    return collectionApi.getFilteredByGlob("src/posts/**/*.md");
+    return collectionApi
+      .getFilteredByGlob("src/posts/**/*.md")
+      .sort((a, b) => b.date - a.date);
   });
   eleventyConfig.addCollection("posts", function (collectionApi) {
     return collectionApi.getFilteredByTag("posts");
