@@ -40,8 +40,17 @@ jobs:
         run: npm run generate
 
       - name: Commit changes
+        id: commit
         run: |
-          if [[ -n "$(git status --porcelain)" ]]; then
+          STATUS="$(git status --porcelain)"
+          if [[ -n "$STATUS" ]]; then
+            {
+              echo "status<<EOF"
+              echo "$STATUS"
+              echo "EOF"
+              echo "has_changes=true"
+            } >> "$GITHUB_OUTPUT"
+
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add -A
@@ -52,6 +61,20 @@ jobs:
               SLUG=$(date -u +"%H%M%S")
             fi
             git commit -m "chore(auto): add post $(date -u +"%Y-%m-%d")-$SLUG"
+          else
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Push changes
+        if: steps.commit.outputs.has_changes == 'true'
+        run: |
+          STATUS="$(git status --porcelain)"
+          if [[ -z "$STATUS" ]]; then
+            STATUS="${{ steps.commit.outputs.status }}"
+          fi
+
+          if [[ -n "$STATUS" ]]; then
+            git push origin HEAD:${{ github.ref_name }}
           fi
 
       - name: Build site
