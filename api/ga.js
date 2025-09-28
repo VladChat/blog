@@ -3,7 +3,7 @@ const GA_ENDPOINT = `https://www.google-analytics.com/collect`;
 // Domains to allowlist. Replace with your own!
 const originallowlist = [];
 // Update me.
-allowlistDomain("eleventy-high-performance-blog-sample.industrialempathy.com/");
+allowlistDomain("ai-seo.news/");
 
 let hot = false;
 let age = Date.now();
@@ -59,10 +59,9 @@ function allowlistDomain(domain, addWww = true) {
 async function cid(ip, otherStuff) {
   if (ip) {
     const encoder = new TextEncoder();
-    const data = encoder.encode(
-      "sha256",
-      ip + otherStuff + "this is open source"
-    );
+    const salt = "this is open source";
+    const cidSource = `${ip}${otherStuff || ""}${salt}`;
+    const data = encoder.encode(cidSource);
     const hashBuffer = await crypto.subtle.digest("SHA-256", data);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     const hashHex = hashArray
@@ -89,7 +88,7 @@ async function proxyToGoogleAnalytics(req, url, body) {
   params.set("ua", params.get("ua") || headers.get("user-agent") || ""); // user agent override
   params.set(
     "cid",
-    params.get("cid") || (await cid(params.get("uip", params.get("ua"))))
+    params.get("cid") || (await cid(params.get("uip"), params.get("ua")))
   );
 
   const qs = params.toString();
