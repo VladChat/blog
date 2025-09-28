@@ -50,7 +50,7 @@ npm install
 npm run generate:dry   # Preview which headlines and keywords would be used without calling OpenAI
 npm run generate       # Requires OPENAI_API_KEY in your environment
 npm run build
-npm start              # Starts Eleventy’s dev server at http://localhost:8080/
+npm run serve          # Starts Eleventy’s dev server at http://localhost:8080/
 ```
 
 Generated posts live in `src/posts/<year>/<month>/<slug>/index.md`. Eleventy collections pick them up automatically thanks to [`src/posts/posts.11tydata.js`](src/posts/posts.11tydata.js), and the sitemap/RSS feeds are rebuilt on every deploy.
